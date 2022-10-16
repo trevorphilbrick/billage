@@ -17,7 +17,7 @@ const LeftPaneContainer = styled.div`
     flex-direction: row;
     height: 64px;
     width: 100vw;
-    position: absolute;
+    position: fixed;
     bottom: 0;
     left: 0;
   }

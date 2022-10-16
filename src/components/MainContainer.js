@@ -4,7 +4,6 @@ import DashBoardHeader from "./DashBoardHeader";
 
 const MainContainerWrapper = styled.div`
   padding: 24px 24px 24px 96px;
-  background-color: red;
   @media (max-width: 600px) {
     padding: 24px;
   }
