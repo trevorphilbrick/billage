@@ -1,13 +1,13 @@
 import styled from "styled-components";
 import { useFormik } from "formik";
-import { addDoc, collection } from "firebase/firestore";
-import { useContext, useEffect } from "react";
-import { firestoreContext } from "../screens/Dashboard";
+import { addDoc, collection, getDocs, query } from "firebase/firestore";
+import { useContext } from "react";
+import { firestoreContext, UpdatedBillListContext } from "../screens/Dashboard";
 import { v4 as uuidv4 } from "uuid";
 import * as Yup from "yup";
 
 const AddNewContainerWrapper = styled.div`
-  width: 100%;
+  flex: 1;
 `;
 
 const AddNewForm = styled.form`
@@ -54,6 +54,8 @@ const AddNewBillSchema = Yup.object().shape({
 
 export default function AddNewContainer() {
   const db = useContext(firestoreContext);
+  const { setUpdatedBills } = useContext(UpdatedBillListContext);
+  const q = query(collection(db, "bills"));
 
   const formikAddNewBill = useFormik({
     initialValues: {
@@ -73,6 +75,10 @@ export default function AddNewContainer() {
         console.log("Document updated");
       } catch (e) {
         console.error("Error adding document: ", e);
+      } finally {
+        getDocs(q).then((snapshot) => {
+          setUpdatedBills(snapshot.docs.map((snap) => snap.data()));
+        });
       }
     },
   });

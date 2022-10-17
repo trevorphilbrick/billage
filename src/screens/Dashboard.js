@@ -1,7 +1,6 @@
 import styled from "styled-components";
-import LeftPane from "../components/LeftPane";
 import MainContainer from "../components/MainContainer";
-import { createContext } from "react";
+import { createContext, useState } from "react";
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
@@ -21,14 +20,21 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
 export const firestoreContext = createContext(db);
+export const UpdatedBillListContext = createContext({
+  updatedBills: [],
+  setUpdatedBills: () => {},
+});
 
 export default function Dashboard() {
+  const [updatedBills, setUpdatedBills] = useState([]);
+  const billContext = { updatedBills, setUpdatedBills };
+
   return (
-    <DashboardContainer>
-      <LeftPane />
-      <MainContainer />
-    </DashboardContainer>
+    <UpdatedBillListContext.Provider value={billContext}>
+      <DashboardContainer>
+        <MainContainer />
+      </DashboardContainer>
+    </UpdatedBillListContext.Provider>
   );
 }

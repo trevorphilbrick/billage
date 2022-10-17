@@ -3,7 +3,7 @@ import BillList from "./BillList";
 import DashBoardHeader from "./DashBoardHeader";
 
 const MainContainerWrapper = styled.div`
-  padding: 24px 24px 24px 96px;
+  padding: 24px;
   @media (max-width: 600px) {
     padding: 24px;
   }
