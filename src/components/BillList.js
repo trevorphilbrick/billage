@@ -36,7 +36,10 @@ export default function BillList() {
         fetchedBillData.map((bill) => {
           return (
             <BillCell key={bill.billId}>
-              {bill.data.name}
+              <div>
+                <input type="checkbox" style={{ marginRight: 16 }} />
+                {bill.data.name}
+              </div>
               <div
                 style={{
                   display: "flex",
