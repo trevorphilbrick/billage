@@ -1,17 +1,7 @@
 import { collection, getDocs, query } from "firebase/firestore";
 import { useContext, useEffect, useState } from "react";
-import styled from "styled-components";
 import { firestoreContext, UpdatedBillListContext } from "../screens/Dashboard";
-
-const BillCell = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #00293d;
-  margin-bottom: 8px;
-  padding: 12px 16px;
-  border-radius: 4px;
-`;
+import BillCell from "./BillCell";
 
 export default function BillList() {
   const db = useContext(firestoreContext);
@@ -34,24 +24,7 @@ export default function BillList() {
     <div style={{ marginTop: 36 }}>
       {fetchedBillData &&
         fetchedBillData.map((bill) => {
-          return (
-            <BillCell key={bill.billId}>
-              <div>
-                <input type="checkbox" style={{ marginRight: 16 }} />
-                {bill.data.name}
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  width: "120px",
-                }}
-              >
-                <div>{bill.data.monthlyAmt}</div>
-                <div>{bill.data.billType}</div>
-              </div>
-            </BillCell>
-          );
+          return <BillCell bill={bill} key={bill.billId} />;
         })}
     </div>
   );

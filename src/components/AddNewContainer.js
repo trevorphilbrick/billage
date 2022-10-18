@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useFormik } from "formik";
-import { addDoc, collection, getDocs, query } from "firebase/firestore";
-import { useContext } from "react";
+import { collection, doc, getDocs, query, setDoc } from "firebase/firestore";
+import { useContext, useEffect, useState } from "react";
 import { firestoreContext, UpdatedBillListContext } from "../screens/Dashboard";
 import { v4 as uuidv4 } from "uuid";
 import * as Yup from "yup";
@@ -55,7 +55,14 @@ const AddNewBillSchema = Yup.object().shape({
 export default function AddNewContainer() {
   const db = useContext(firestoreContext);
   const { setUpdatedBills } = useContext(UpdatedBillListContext);
+  const [billId, setBillId] = useState();
   const q = query(collection(db, "bills"));
+
+  const generateNewBillId = () => {
+    return setBillId(uuidv4());
+  };
+
+  useEffect(() => generateNewBillId(), []);
 
   const formikAddNewBill = useFormik({
     initialValues: {
@@ -67,11 +74,12 @@ export default function AddNewContainer() {
     validationSchema: AddNewBillSchema,
     onSubmit: async (values, { resetForm }) => {
       try {
-        await addDoc(collection(db, "bills"), {
-          billId: uuidv4(),
+        await setDoc(doc(db, "bills", billId.toString()), {
+          billId,
           data: values,
         });
         resetForm();
+        generateNewBillId();
         console.log("Document updated");
       } catch (e) {
         console.error("Error adding document: ", e);
