@@ -93,12 +93,14 @@ export default function Login() {
           <StyledInput
             name="email"
             type="email"
+            placeholder="email"
             value={formikLogin.values.email}
             onChange={formikLogin.handleChange}
           />
           <StyledInput
             type="password"
             name="password"
+            placeholder="password"
             value={formikLogin.values.password}
             onChange={formikLogin.handleChange}
           />
