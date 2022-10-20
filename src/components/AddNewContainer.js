@@ -1,8 +1,16 @@
 import styled from "styled-components";
 import { useFormik } from "formik";
-import { collection, doc, getDocs, query, setDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  query,
+  setDoc,
+  where,
+} from "firebase/firestore";
 import { useContext, useEffect, useState } from "react";
-import { firestoreContext, UpdatedBillListContext } from "../screens/Dashboard";
+import { UpdatedBillListContext } from "../screens/Dashboard";
+import { firestoreContext, UserContext } from "../App";
 import { v4 as uuidv4 } from "uuid";
 import * as Yup from "yup";
 
@@ -39,6 +47,7 @@ const SubmitButton = styled.button`
   color: #333;
   font-weight: bolder;
   border-radius: 4px;
+  border: none;
   &:active {
     background-color: #899971;
   }
@@ -54,10 +63,13 @@ const AddNewBillSchema = Yup.object().shape({
 
 export default function AddNewContainer() {
   const db = useContext(firestoreContext);
+  const { user } = useContext(UserContext);
+  // TODO: submit user.user.uid with setDoc payload
+  // update getDoc query to user.where to search for uid
+  console.log(user.user.uid);
   const { setUpdatedBills } = useContext(UpdatedBillListContext);
   const [billId, setBillId] = useState();
-  const q = query(collection(db, "bills"));
-
+  const q = query(collection(db, "bills"), where("uid", "==", user.user.uid));
   const generateNewBillId = () => {
     return setBillId(uuidv4());
   };
@@ -75,6 +87,7 @@ export default function AddNewContainer() {
     onSubmit: async (values, { resetForm }) => {
       try {
         await setDoc(doc(db, "bills", billId.toString()), {
+          uid: user.user.uid,
           billId,
           data: values,
         });

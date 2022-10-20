@@ -1,7 +1,14 @@
 import styled from "styled-components";
 import { useContext, useEffect, useState } from "react";
-import { doc, updateDoc, getDocs, query, collection } from "firebase/firestore";
-import { firestoreContext } from "../screens/Dashboard";
+import {
+  doc,
+  updateDoc,
+  getDocs,
+  query,
+  collection,
+  where,
+} from "firebase/firestore";
+import { firestoreContext, UserContext } from "../App";
 import { UpdatedBillListContext } from "../screens/Dashboard";
 
 const BillCellWrapper = styled.div`
@@ -17,13 +24,15 @@ const BillCellWrapper = styled.div`
 
 export default function BillCell({ bill }) {
   const db = useContext(firestoreContext);
-  const q = query(collection(db, "bills"));
+  const { user } = useContext(UserContext);
+  const q = query(collection(db, "bills"), where("uid", "==", user.user.uid));
   const { setUpdatedBills } = useContext(UpdatedBillListContext);
   const { billId, data } = bill;
   const billRef = doc(db, "bills", billId);
   const [billPaid, setBillPaid] = useState(data.paid);
 
   useEffect(() => {
+    // TODO: simplify the updateDoc calls
     if (billPaid) {
       try {
         updateDoc(billRef, {
@@ -31,7 +40,7 @@ export default function BillCell({ bill }) {
             ...data,
             paid: true,
           },
-        }).then(() => console.log("bill updated!", { bill }));
+        });
       } catch (error) {
         console.log(error);
       } finally {

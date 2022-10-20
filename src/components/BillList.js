@@ -1,12 +1,14 @@
-import { collection, getDocs, query } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { useContext, useEffect, useState } from "react";
-import { firestoreContext, UpdatedBillListContext } from "../screens/Dashboard";
+import { UpdatedBillListContext } from "../screens/Dashboard";
+import { firestoreContext, UserContext } from "../App";
 import BillCell from "./BillCell";
 
 export default function BillList() {
   const db = useContext(firestoreContext);
   const { updatedBills } = useContext(UpdatedBillListContext);
-  const q = query(collection(db, "bills"));
+  const { user } = useContext(UserContext);
+  const q = query(collection(db, "bills"), where("uid", "==", user.user.uid));
 
   const [fetchedBillData, setFetchedBillData] = useState([]);
 
