@@ -1,5 +1,5 @@
 import "./App.css";
-import { createContext, useEffect, useState } from "react";
+import { createContext, useState } from "react";
 import Dashboard from "./screens/Dashboard";
 import Login from "./screens/Login";
 import { Routes, Route } from "react-router-dom";
