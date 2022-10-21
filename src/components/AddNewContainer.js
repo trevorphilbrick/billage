@@ -66,7 +66,6 @@ export default function AddNewContainer() {
   const { user } = useContext(UserContext);
   // TODO: submit user.user.uid with setDoc payload
   // update getDoc query to user.where to search for uid
-  console.log(user);
   const { setUpdatedBills } = useContext(UpdatedBillListContext);
   const [billId, setBillId] = useState();
   const q = query(collection(db, "bills"), where("uid", "==", user.uid));
@@ -87,7 +86,7 @@ export default function AddNewContainer() {
     onSubmit: async (values, { resetForm }) => {
       try {
         await setDoc(doc(db, "bills", billId.toString()), {
-          uid: user.user.uid,
+          uid: user.uid,
           billId,
           data: values,
         });

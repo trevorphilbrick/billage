@@ -29,7 +29,7 @@ export const LoadingContext = createContext({
 
 function App() {
   const [user, setUser] = useState();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const userProvider = { user, setUser };
   const loadingProvider = { isLoading, setIsLoading };
   return (

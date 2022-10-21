@@ -2,6 +2,7 @@ import styled from "styled-components";
 import MainContainer from "../components/MainContainer";
 import { createContext, useContext, useEffect, useState } from "react";
 import { LoadingContext, UserContext } from "../App";
+import { async } from "@firebase/util";
 
 const DashboardContainer = styled.div`
   width: 100vw;
@@ -18,28 +19,37 @@ export default function Dashboard() {
   const billContext = { updatedBills, setUpdatedBills };
   const { user, setUser } = useContext(UserContext);
   const { isLoading, setIsLoading } = useContext(LoadingContext);
-  useEffect(() => {
-    setIsLoading(true);
+  const fetchSessionStorageData = async () => {
     if (!user) {
-      const savedUserObject = localStorage.getItem(
+      const savedUserObject = sessionStorage.getItem(
         "firebase:authUser:AIzaSyB6cb75lr1v5_oqwT3nv0VrUcJCOHvdeBc:[DEFAULT]"
       );
-      console.log(JSON.parse(savedUserObject));
-      setUser(JSON.parse(savedUserObject));
+
+      const parsedUserObject = JSON.parse(savedUserObject);
+      console.log(parsedUserObject);
+
+      setUser(parsedUserObject);
+
+      setIsLoading(false);
+    } else {
+      setIsLoading(false);
     }
-    console.log({ user });
-    setIsLoading(false);
+  };
+  useEffect(() => {
+    console.log(user);
+    setIsLoading(true);
+    fetchSessionStorageData();
   }, []);
 
   return (
     <UpdatedBillListContext.Provider value={billContext}>
       {isLoading ? (
         <div>LOADING</div>
-      ) : user ? (
+      ) : (
         <DashboardContainer>
           <MainContainer />
         </DashboardContainer>
-      ) : null}
+      )}
     </UpdatedBillListContext.Provider>
   );
 }
