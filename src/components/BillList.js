@@ -8,7 +8,7 @@ export default function BillList() {
   const db = useContext(firestoreContext);
   const { updatedBills } = useContext(UpdatedBillListContext);
   const { user } = useContext(UserContext);
-  const q = query(collection(db, "bills"), where("uid", "==", user.user.uid));
+  const q = query(collection(db, "bills"), where("uid", "==", user.uid));
 
   const [fetchedBillData, setFetchedBillData] = useState([]);
 

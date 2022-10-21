@@ -25,7 +25,7 @@ const BillCellWrapper = styled.div`
 export default function BillCell({ bill }) {
   const db = useContext(firestoreContext);
   const { user } = useContext(UserContext);
-  const q = query(collection(db, "bills"), where("uid", "==", user.user.uid));
+  const q = query(collection(db, "bills"), where("uid", "==", user.uid));
   const { setUpdatedBills } = useContext(UpdatedBillListContext);
   const { billId, data } = bill;
   const billRef = doc(db, "bills", billId);

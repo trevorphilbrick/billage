@@ -1,7 +1,12 @@
 import { useFormik } from "formik";
 import { useContext } from "react";
 import { authContext, UserContext } from "../App";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import {
+  browserLocalPersistence,
+  browserSessionPersistence,
+  setPersistence,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
@@ -67,18 +72,21 @@ export default function Login() {
     onSubmit: async ({ email, password }) => {
       console.log(email, password);
       try {
+        await setPersistence(auth, browserSessionPersistence);
         await signInWithEmailAndPassword(auth, email, password).then(
           (userCredential) => {
-            setUser(userCredential);
+            // TODO: refactor to jsut use session token and keep uid
+            setUser(userCredential.user);
           }
         );
-        if (user) {
-          navigate("/dashboard");
-        }
       } catch {
         ({ code, message }) => {
           console.log({ code, message });
         };
+      } finally {
+        if (user) {
+          navigate("/dashboard");
+        }
       }
     },
   });

@@ -22,17 +22,25 @@ const db = getFirestore(app);
 export const firestoreContext = createContext(db);
 export const authContext = createContext(auth);
 export const UserContext = createContext({ user: {}, setUser: () => {} });
+export const LoadingContext = createContext({
+  isLoading: {},
+  setIsLoading: () => {},
+});
 
 function App() {
   const [user, setUser] = useState();
+  const [isLoading, setIsLoading] = useState(false);
   const userProvider = { user, setUser };
+  const loadingProvider = { isLoading, setIsLoading };
   return (
-    <UserContext.Provider value={userProvider}>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-      </Routes>
-    </UserContext.Provider>
+    <LoadingContext.Provider value={loadingProvider}>
+      <UserContext.Provider value={userProvider}>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+        </Routes>
+      </UserContext.Provider>
+    </LoadingContext.Provider>
   );
 }
 
