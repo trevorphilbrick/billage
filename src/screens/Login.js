@@ -2,7 +2,6 @@ import { useFormik } from "formik";
 import { useContext } from "react";
 import { authContext, UserContext } from "../App";
 import {
-  browserLocalPersistence,
   browserSessionPersistence,
   setPersistence,
   signInWithEmailAndPassword,
