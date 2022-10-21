@@ -2,7 +2,6 @@ import styled from "styled-components";
 import MainContainer from "../components/MainContainer";
 import { createContext, useContext, useEffect, useState } from "react";
 import { LoadingContext, UserContext } from "../App";
-import { async } from "@firebase/util";
 
 const DashboardContainer = styled.div`
   width: 100vw;
