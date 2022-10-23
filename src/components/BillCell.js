@@ -7,9 +7,11 @@ import {
   query,
   collection,
   where,
+  deleteDoc,
 } from "firebase/firestore";
 import { firestoreContext, UserContext } from "../App";
 import { UpdatedBillListContext } from "../screens/Dashboard";
+import { FiXCircle } from "react-icons/fi";
 
 const BillCellWrapper = styled.div`
   display: flex;
@@ -22,6 +24,16 @@ const BillCellWrapper = styled.div`
   border-radius: 4px;
 `;
 
+const DeleteButton = styled.button`
+  background: none;
+  border: none;
+  color: #ccc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 4px;
+`;
+
 export default function BillCell({ bill }) {
   const db = useContext(firestoreContext);
   const { user } = useContext(UserContext);
@@ -30,6 +42,10 @@ export default function BillCell({ bill }) {
   const { billId, data } = bill;
   const billRef = doc(db, "bills", billId);
   const [billPaid, setBillPaid] = useState(data.paid);
+
+  const deleteSelectedBill = async () => {
+    await deleteDoc(billRef);
+  };
 
   useEffect(() => {
     // TODO: simplify the updateDoc calls
@@ -65,6 +81,12 @@ export default function BillCell({ bill }) {
       }
     }
   }, [billPaid]);
+
+  useEffect(() => {
+    getDocs(q).then((snapshot) => {
+      setUpdatedBills(snapshot.docs.map((snap) => snap.data()));
+    });
+  }, [deleteSelectedBill]);
   return (
     <BillCellWrapper key={billId} isPaid={billPaid}>
       <div>
@@ -86,6 +108,9 @@ export default function BillCell({ bill }) {
       >
         <div>{data.monthlyAmt}</div>
         <div>{data.billType}</div>
+        <DeleteButton onClick={() => deleteSelectedBill()}>
+          <FiXCircle size={16} />
+        </DeleteButton>
       </div>
     </BillCellWrapper>
   );
