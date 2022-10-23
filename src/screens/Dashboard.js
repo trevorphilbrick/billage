@@ -2,6 +2,7 @@ import styled from "styled-components";
 import MainContainer from "../components/MainContainer";
 import { createContext, useContext, useEffect, useState } from "react";
 import { LoadingContext, UserContext } from "../App";
+import { useNavigate } from "react-router-dom";
 
 const DashboardContainer = styled.div`
   width: 100vw;
@@ -14,10 +15,11 @@ export const UpdatedBillListContext = createContext({
 });
 
 export default function Dashboard() {
+  const navigate = useNavigate();
   const [updatedBills, setUpdatedBills] = useState([]);
   const billContext = { updatedBills, setUpdatedBills };
   const { user, setUser } = useContext(UserContext);
-  const { isLoading, setIsLoading } = useContext(LoadingContext);
+  const { setIsLoading } = useContext(LoadingContext);
   const fetchSessionStorageData = async () => {
     if (!user) {
       const savedUserObject = sessionStorage.getItem(
@@ -35,20 +37,28 @@ export default function Dashboard() {
     }
   };
   useEffect(() => {
-    console.log(user);
     setIsLoading(true);
     fetchSessionStorageData();
+    if (!user) {
+      navigate("/");
+    }
   }, []);
+
+  useEffect(() => {
+    if (!user) {
+      navigate("/");
+    }
+  }, [user]);
 
   return (
     <UpdatedBillListContext.Provider value={billContext}>
-      {isLoading ? (
-        <div>LOADING</div>
-      ) : (
+      {user ? (
         <DashboardContainer>
           <MainContainer />
         </DashboardContainer>
-      )}
+      ) : null}
+
+      <button onClick={() => setUser(undefined)}>LOGOUT</button>
     </UpdatedBillListContext.Provider>
   );
 }

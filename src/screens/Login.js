@@ -1,5 +1,5 @@
 import { useFormik } from "formik";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { authContext, UserContext } from "../App";
 import {
   browserSessionPersistence,
@@ -63,13 +63,19 @@ export default function Login() {
   const navigate = useNavigate();
   const auth = useContext(authContext);
   const { user, setUser } = useContext(UserContext);
+
+  useEffect(() => {
+    if (user) {
+      navigate("/dashboard");
+    }
+  }, [user]);
+
   const formikLogin = useFormik({
     initialValues: {
       email: "",
       password: "",
     },
     onSubmit: async ({ email, password }) => {
-      console.log(email, password);
       try {
         await setPersistence(auth, browserSessionPersistence);
         await signInWithEmailAndPassword(auth, email, password).then(
@@ -78,14 +84,8 @@ export default function Login() {
             setUser(userCredential.user);
           }
         );
-      } catch {
-        ({ code, message }) => {
-          console.log({ code, message });
-        };
-      } finally {
-        if (user) {
-          navigate("/dashboard");
-        }
+      } catch (error) {
+        console.log(error);
       }
     },
   });
