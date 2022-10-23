@@ -99,6 +99,7 @@ export default function AddNewContainer() {
         getDocs(q).then((snapshot) => {
           setUpdatedBills(snapshot.docs.map((snap) => snap.data()));
         });
+        console.log(`request made in AddNewContainer line 102`);
       }
     },
   });

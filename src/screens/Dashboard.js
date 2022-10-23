@@ -3,6 +3,7 @@ import MainContainer from "../components/MainContainer";
 import { createContext, useContext, useEffect, useState } from "react";
 import { LoadingContext, UserContext } from "../App";
 import { useNavigate } from "react-router-dom";
+import Menu from "../components/Menu";
 
 const DashboardContainer = styled.div`
   width: 100vw;
@@ -54,11 +55,10 @@ export default function Dashboard() {
     <UpdatedBillListContext.Provider value={billContext}>
       {user ? (
         <DashboardContainer>
+          <Menu />
           <MainContainer />
         </DashboardContainer>
       ) : null}
-
-      <button onClick={() => setUser(undefined)}>LOGOUT</button>
     </UpdatedBillListContext.Provider>
   );
 }

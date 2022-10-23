@@ -16,6 +16,7 @@ export default function BillList() {
     getDocs(q).then((snapshot) => {
       setFetchedBillData(snapshot.docs.map((snap) => snap.data()));
     });
+    console.log(`request made in BillList line 19`);
   }, []);
 
   useEffect(() => {

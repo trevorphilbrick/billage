@@ -45,6 +45,10 @@ export default function BillCell({ bill }) {
 
   const deleteSelectedBill = async () => {
     await deleteDoc(billRef);
+    getDocs(q).then((snapshot) => {
+      setUpdatedBills(snapshot.docs.map((snap) => snap.data()));
+    });
+    console.log(`request made in BillCell line 91`);
   };
 
   useEffect(() => {
@@ -57,6 +61,7 @@ export default function BillCell({ bill }) {
             paid: true,
           },
         });
+        console.log(`request made in BillCell line 60`);
       } catch (error) {
         console.log(error);
       } finally {
@@ -72,6 +77,7 @@ export default function BillCell({ bill }) {
             paid: false,
           },
         });
+        console.log(`request made in BillCell line 76`);
       } catch (error) {
         console.log(error);
       } finally {
@@ -82,14 +88,15 @@ export default function BillCell({ bill }) {
     }
   }, [billPaid]);
 
-  useEffect(() => {
-    getDocs(q).then((snapshot) => {
-      setUpdatedBills(snapshot.docs.map((snap) => snap.data()));
-    });
-  }, [deleteSelectedBill]);
   return (
     <BillCellWrapper key={billId} isPaid={billPaid}>
-      <div>
+      <div
+        style={{
+          display: "flex",
+          width: "160px",
+          marginRight: "16px",
+        }}
+      >
         <input
           type="checkbox"
           value={billPaid}
@@ -97,7 +104,7 @@ export default function BillCell({ bill }) {
           onChange={() => (billPaid ? setBillPaid(false) : setBillPaid(true))}
           style={{ marginRight: 16 }}
         />
-        {data.name}
+        <div>{data.name}</div>
       </div>
       <div
         style={{
@@ -106,8 +113,8 @@ export default function BillCell({ bill }) {
           width: "120px",
         }}
       >
-        <div>{data.monthlyAmt}</div>
-        <div>{data.billType}</div>
+        <div style={{ marginRight: "8px" }}>{data.monthlyAmt}</div>
+        <div style={{ marginRight: "8px" }}>{data.billType}</div>
         <DeleteButton onClick={() => deleteSelectedBill()}>
           <FiXCircle size={16} />
         </DeleteButton>
