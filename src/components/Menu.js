@@ -7,13 +7,12 @@ const MenuWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
   padding-right: 16px;
-  padding-top: 16px;
 `;
 
 const AnimatedContainer = styled.div`
   width: 300px;
   height: 300px;
-  background-color: yellow;
+  background-color: #008ed5;
   position: fixed;
   top: 0;
   right: -300;
@@ -23,7 +22,8 @@ const AnimatedContainer = styled.div`
   flex-direction: column;
   align-items: flex-end;
   justify-content: flex-end;
-
+  color: #333;
+  box-shadow: -2px 4px 12px -8px rgba(0, 0, 0, 0.75);
   &.visible {
     clip-path: circle(100%);
     right: 0;
@@ -41,7 +41,7 @@ export default function Menu() {
   const { setUser } = useContext(UserContext);
   return (
     <MenuWrapper>
-      <FiMenu onClick={() => setIsMinimized(false)} />
+      <FiMenu onClick={() => setIsMinimized(false)} size={24} />
       <AnimatedContainer className={isMinimized ? "hidden" : "visible"}>
         <div
           style={{
@@ -54,7 +54,11 @@ export default function Menu() {
             alignItems: "flex-end",
           }}
         >
-          <FiChevronRight onClick={() => setIsMinimized(true)} />
+          <FiChevronRight
+            onClick={() => setIsMinimized(true)}
+            size={24}
+            style={{ marginBottom: "16px" }}
+          />
           <h4 onClick={() => setUser(undefined)}>Log out</h4>
         </div>
       </AnimatedContainer>
