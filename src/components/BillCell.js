@@ -22,6 +22,11 @@ const BillCellWrapper = styled.div`
   margin-bottom: 8px;
   padding: 12px 16px;
   border-radius: 4px;
+  transition: transform 0.3s;
+
+  &:hover {
+    transform: scale(1.05);
+  }
 `;
 
 const DeleteButton = styled.button`

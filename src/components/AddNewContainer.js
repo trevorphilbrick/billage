@@ -106,6 +106,7 @@ export default function AddNewContainer() {
 
   return (
     <AddNewContainerWrapper>
+      <h3 style={{ textAlign: "center" }}>Add A Bill</h3>
       <AddNewForm onSubmit={formikAddNewBill.handleSubmit}>
         <InputLabel>
           Bill name
