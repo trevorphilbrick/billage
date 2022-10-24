@@ -5,6 +5,7 @@ import {
   browserSessionPersistence,
   setPersistence,
   signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
 } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
@@ -50,7 +51,20 @@ const SubmitButton = styled.button`
   background-color: #52b788;
   padding: 8px;
   margin: 16px 0 0 0;
+  width: 100%;
   color: #333;
+  font-weight: bolder;
+  border-radius: 4px;
+  border: none;
+  &:active {
+    background-color: #899971;
+  }
+`;
+const CreateAccountButton = styled.button`
+  background-color: #00293d;
+  padding: 8px;
+  margin: 16px 0 0 0;
+  color: #ccc;
   font-weight: bolder;
   border-radius: 4px;
   border: none;
@@ -89,6 +103,21 @@ export default function Login() {
       }
     },
   });
+
+  const createUser = async () => {
+    try {
+      await createUserWithEmailAndPassword(
+        auth,
+        formikLogin.values.email,
+        formikLogin.values.password
+      ).then((userCredential) => {
+        // Signed in
+        setUser(userCredential.user);
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <Screen>
       <LoginFormWrapper>
@@ -112,6 +141,9 @@ export default function Login() {
             onChange={formikLogin.handleChange}
           />
           <SubmitButton type="submit">Log in</SubmitButton>
+          <CreateAccountButton onClick={() => createUser()}>
+            Create an account
+          </CreateAccountButton>
         </LoginForm>
       </LoginFormWrapper>
     </Screen>
