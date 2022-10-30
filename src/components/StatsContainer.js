@@ -2,7 +2,6 @@ import styled from "styled-components";
 import { Circle } from "rc-progress";
 import { useContext, useEffect, useState } from "react";
 import { UpdatedBillListContext } from "../screens/Dashboard";
-import BillList from "./BillList";
 
 const StatsContainerWrapper = styled.div`
   flex: 1;
