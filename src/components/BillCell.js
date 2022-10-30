@@ -14,9 +14,6 @@ import { UpdatedBillListContext } from "../screens/Dashboard";
 import { FiXCircle } from "react-icons/fi";
 
 const BillCellWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   background-color: ${({ isPaid }) => (isPaid ? "#52b788" : "#00293d")};
   color: ${({ isPaid }) => (isPaid ? "#333" : "#ccc")};
   margin-bottom: 8px;
@@ -27,6 +24,21 @@ const BillCellWrapper = styled.div`
   &:hover {
     transform: scale(1.05);
   }
+`;
+
+const MinimizedContentWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+const MaximizedContentWrapper = styled.div`
+  margin-top: 8px;
+`;
+
+const DateContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;
 
 const DeleteButton = styled.button`
@@ -42,11 +54,54 @@ const DeleteButton = styled.button`
 export default function BillCell({ bill }) {
   const db = useContext(firestoreContext);
   const { user } = useContext(UserContext);
-  const q = query(collection(db, "bills"), where("uid", "==", user.uid));
   const { setUpdatedBills } = useContext(UpdatedBillListContext);
   const { billId, data } = bill;
+  const q = query(collection(db, "bills"), where("uid", "==", user.uid));
   const billRef = doc(db, "bills", billId);
   const [billPaid, setBillPaid] = useState(data.paid);
+  const [isActive, setIsActive] = useState(false);
+
+  const createDate = () => {
+    const day = data.dueDate;
+
+    let dayOfWeek;
+
+    const currentDate = new Date();
+
+    const month = currentDate.getMonth();
+
+    const parsedDate = currentDate.toDateString().split(" ");
+
+    const billDueDay = new Date(
+      `${parsedDate[0]} ${parsedDate[1]} ${data.dueDate} ${parsedDate[3]}`
+    ).getDay();
+
+    switch (billDueDay) {
+      case 1:
+        dayOfWeek = "Monday";
+        break;
+      case 2:
+        dayOfWeek = "Tuesday";
+        break;
+      case 3:
+        dayOfWeek = "Wednesday";
+        break;
+      case 4:
+        dayOfWeek = "Thursday";
+        break;
+      case 5:
+        dayOfWeek = "Friday";
+        break;
+      case 6:
+        dayOfWeek = "Saturday";
+        break;
+      case 0:
+        dayOfWeek = "Sunday";
+        break;
+    }
+
+    return `${dayOfWeek} ${day}/${month}`;
+  };
 
   const deleteSelectedBill = async () => {
     await deleteDoc(billRef);
@@ -94,36 +149,52 @@ export default function BillCell({ bill }) {
   }, [billPaid]);
 
   return (
-    <BillCellWrapper key={billId} isPaid={billPaid}>
-      <div
-        style={{
-          display: "flex",
-          width: "160px",
-          marginRight: "16px",
-        }}
-      >
-        <input
-          type="checkbox"
-          value={billPaid}
-          checked={billPaid}
-          onChange={() => (billPaid ? setBillPaid(false) : setBillPaid(true))}
-          style={{ marginRight: 16 }}
-        />
-        <div>{data.name}</div>
-      </div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          width: "120px",
-        }}
-      >
-        <div style={{ marginRight: "8px" }}>{data.monthlyAmt}</div>
-        <div style={{ marginRight: "8px" }}>{data.billType}</div>
-        <DeleteButton onClick={() => deleteSelectedBill()}>
-          <FiXCircle size={16} />
-        </DeleteButton>
-      </div>
+    <BillCellWrapper
+      key={billId}
+      isPaid={billPaid}
+      onClick={() => setIsActive(!isActive)}
+    >
+      <MinimizedContentWrapper>
+        <div
+          style={{
+            display: "flex",
+            width: "160px",
+            marginRight: "16px",
+          }}
+        >
+          <input
+            type="checkbox"
+            value={billPaid}
+            checked={billPaid}
+            onChange={() => (billPaid ? setBillPaid(false) : setBillPaid(true))}
+            style={{ marginRight: 16 }}
+          />
+          <div>{data.name}</div>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            width: "120px",
+          }}
+        >
+          <div style={{ marginRight: "8px" }}>{data.monthlyAmt}</div>
+          <div style={{ marginRight: "8px" }}>{data.billType}</div>
+          <DeleteButton onClick={() => deleteSelectedBill()}>
+            <FiXCircle size={16} />
+          </DeleteButton>
+        </div>
+      </MinimizedContentWrapper>
+      {isActive && (
+        <MaximizedContentWrapper>
+          {data.dueDate && (
+            <DateContainer>
+              <p>Estimated Due Date:</p>
+              <p>{createDate()}</p>
+            </DateContainer>
+          )}
+        </MaximizedContentWrapper>
+      )}
     </BillCellWrapper>
   );
 }

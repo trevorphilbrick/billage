@@ -59,13 +59,15 @@ const AddNewBillSchema = Yup.object().shape({
     .required("monthly amount is required")
     .moreThan(0, "amount cannot be less than 0."),
   billType: Yup.string().required("bill type cannot be blank."),
+  dueDate: Yup.number()
+    .required("estimated day is required")
+    .moreThan(0, "Day must be 1-31")
+    .lessThan(32, "Day must be 1-31"),
 });
 
 export default function AddNewContainer() {
   const db = useContext(firestoreContext);
   const { user } = useContext(UserContext);
-  // TODO: submit user.user.uid with setDoc payload
-  // update getDoc query to user.where to search for uid
   const { setUpdatedBills } = useContext(UpdatedBillListContext);
   const [billId, setBillId] = useState();
   const q = query(collection(db, "bills"), where("uid", "==", user.uid));
@@ -80,6 +82,7 @@ export default function AddNewContainer() {
       name: "",
       monthlyAmt: 0,
       billType: "",
+      dueDate: "",
       paid: false,
     },
     validationSchema: AddNewBillSchema,
@@ -114,6 +117,7 @@ export default function AddNewContainer() {
             type="text"
             name="name"
             id="name"
+            placeholder="Wifi"
             onChange={formikAddNewBill.handleChange}
             value={formikAddNewBill.values.name}
           />
@@ -141,6 +145,7 @@ export default function AddNewContainer() {
             type="text"
             name="billType"
             id="billType"
+            placeholder="Utilities"
             onChange={formikAddNewBill.handleChange}
             value={formikAddNewBill.values.billType}
           />
@@ -148,6 +153,22 @@ export default function AddNewContainer() {
         {formikAddNewBill.errors.billType &&
         formikAddNewBill.touched.billType ? (
           <div>{formikAddNewBill.errors.billType}</div>
+        ) : null}
+        <InputLabel>
+          Day due
+          <StyledInput
+            type="number"
+            name="dueDate"
+            id="dueDate"
+            placeholder="21"
+            max={31}
+            min={1}
+            onChange={formikAddNewBill.handleChange}
+            value={formikAddNewBill.values.dueDate}
+          />
+        </InputLabel>
+        {formikAddNewBill.errors.dueDate && formikAddNewBill.touched.dueDate ? (
+          <div>{formikAddNewBill.errors.dueDate}</div>
         ) : null}
         <SubmitButton type="submit" onKeyDown={(e) => console.log(e)}>
           Submit
