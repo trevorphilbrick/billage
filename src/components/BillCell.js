@@ -100,7 +100,7 @@ export default function BillCell({ bill }) {
         break;
     }
 
-    return `${dayOfWeek} ${day}/${month}`;
+    return `${dayOfWeek} ${month}/${day}`;
   };
 
   const deleteSelectedBill = async () => {
