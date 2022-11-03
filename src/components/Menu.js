@@ -37,32 +37,49 @@ const AnimatedContainer = styled.div`
   }
 `;
 
+const Backdrop = styled.div`
+  position: absolute;
+  &.visible {
+    width: 100vw;
+    height: 100vh;
+  }
+  &.hidden {
+    width: 0;
+    height: 0;
+  }
+`;
+
 export default function Menu() {
   const [isMinimized, setIsMinimized] = useState(true);
   const { setUser } = useContext(UserContext);
   return (
     <MenuWrapper>
       <FiMenu onClick={() => setIsMinimized(false)} size={24} />
-      <AnimatedContainer className={isMinimized ? "hidden" : "visible"}>
-        <div
-          style={{
-            paddingTop: 16,
-            paddingRight: 16,
-            width: 300,
-            height: 300,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-end",
-          }}
-        >
-          <FiChevronRight
-            onClick={() => setIsMinimized(true)}
-            size={24}
-            style={{ marginBottom: "16px" }}
-          />
-          <h4 onClick={() => setUser(undefined)}>Log out</h4>
-        </div>
-      </AnimatedContainer>
+      <Backdrop
+        onClick={() => setIsMinimized(true)}
+        className={isMinimized ? "hidden" : "visible"}
+      >
+        <AnimatedContainer className={isMinimized ? "hidden" : "visible"}>
+          <div
+            style={{
+              paddingTop: 16,
+              paddingRight: 16,
+              width: 300,
+              height: 300,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-end",
+            }}
+          >
+            <FiChevronRight
+              onClick={() => setIsMinimized(true)}
+              size={24}
+              style={{ marginBottom: "16px" }}
+            />
+            <h4 onClick={() => setUser(undefined)}>Log out</h4>
+          </div>
+        </AnimatedContainer>
+      </Backdrop>
     </MenuWrapper>
   );
 }

@@ -148,6 +148,11 @@ export default function BillCell({ bill }) {
     }
   }, [billPaid]);
 
+  const handleBillPaidToggle = () => {
+    setBillPaid(!billPaid);
+    setIsActive(isActive);
+  };
+
   return (
     <BillCellWrapper
       key={billId}
@@ -166,7 +171,7 @@ export default function BillCell({ bill }) {
             type="checkbox"
             value={billPaid}
             checked={billPaid}
-            onChange={() => (billPaid ? setBillPaid(false) : setBillPaid(true))}
+            onChange={() => handleBillPaidToggle()}
             style={{ marginRight: 16 }}
           />
           <div>{data.name}</div>
