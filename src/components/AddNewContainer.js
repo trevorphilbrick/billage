@@ -65,7 +65,15 @@ const AddNewBillSchema = Yup.object().shape({
     .lessThan(32, "Day must be 1-31"),
 });
 
-export default function AddNewContainer() {
+export default function AddNewContainer({
+  title,
+  name,
+  monthlyAmt,
+  billType,
+  dueDate,
+  paid,
+  onSubmit,
+}) {
   const db = useContext(firestoreContext);
   const { user } = useContext(UserContext);
   const { setUpdatedBills } = useContext(UpdatedBillListContext);
@@ -79,37 +87,47 @@ export default function AddNewContainer() {
 
   const formikAddNewBill = useFormik({
     initialValues: {
-      name: "",
-      monthlyAmt: 0,
-      billType: "",
-      dueDate: "",
-      paid: false,
+      name: name || "",
+      monthlyAmt: monthlyAmt || 0,
+      billType: billType || "",
+      dueDate: dueDate || "",
+      paid: paid || false,
     },
     validationSchema: AddNewBillSchema,
     onSubmit: async (values, { resetForm }) => {
-      try {
-        await setDoc(doc(db, "bills", billId.toString()), {
-          uid: user.uid,
-          billId,
-          data: values,
-        });
-        resetForm();
-        generateNewBillId();
-        console.log("Document updated");
-      } catch (e) {
-        console.error("Error adding document: ", e);
-      } finally {
-        getDocs(q).then((snapshot) => {
-          setUpdatedBills(snapshot.docs.map((snap) => snap.data()));
-        });
-        console.log(`request made in AddNewContainer line 102`);
+      if (onSubmit) {
+        console.log(dueDate);
+        onSubmit(
+          values.name,
+          values.monthlyAmt,
+          values.dueDate,
+          values.billType
+        );
+      } else {
+        try {
+          await setDoc(doc(db, "bills", billId.toString()), {
+            uid: user.uid,
+            billId,
+            data: values,
+          });
+          resetForm();
+          generateNewBillId();
+          console.log("Document updated");
+        } catch (e) {
+          console.error("Error adding document: ", e);
+        } finally {
+          getDocs(q).then((snapshot) => {
+            setUpdatedBills(snapshot.docs.map((snap) => snap.data()));
+          });
+          console.log(`request made in AddNewContainer line 102`);
+        }
       }
     },
   });
 
   return (
     <AddNewContainerWrapper>
-      <h3 style={{ textAlign: "center" }}>Add A Bill</h3>
+      <h3 style={{ textAlign: "center" }}>{title || "Add A Bill"}</h3>
       <AddNewForm onSubmit={formikAddNewBill.handleSubmit}>
         <InputLabel>
           Bill name

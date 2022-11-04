@@ -24,7 +24,7 @@ const AnimatedContainer = styled.div`
   justify-content: flex-end;
   color: #333;
   box-shadow: -2px 4px 12px -8px rgba(0, 0, 0, 0.75);
-  z-index: 100;
+  z-index: 110;
   &.visible {
     clip-path: circle(100%);
     right: 0;
@@ -56,7 +56,9 @@ export default function Menu() {
     <MenuWrapper>
       <FiMenu onClick={() => setIsMinimized(false)} size={24} />
       <Backdrop
-        onClick={() => setIsMinimized(true)}
+        onClick={(event) =>
+          event.currentTarget === event.target && setIsMinimized(true)
+        }
         className={isMinimized ? "hidden" : "visible"}
       >
         <AnimatedContainer className={isMinimized ? "hidden" : "visible"}>
