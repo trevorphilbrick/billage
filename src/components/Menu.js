@@ -24,7 +24,7 @@ const AnimatedContainer = styled.div`
   justify-content: flex-end;
   color: #333;
   box-shadow: -2px 4px 12px -8px rgba(0, 0, 0, 0.75);
-  z-index: 100;
+  z-index: 110;
   &.visible {
     clip-path: circle(100%);
     right: 0;
@@ -37,32 +37,51 @@ const AnimatedContainer = styled.div`
   }
 `;
 
+const Backdrop = styled.div`
+  position: absolute;
+  &.visible {
+    width: 100vw;
+    height: 100vh;
+  }
+  &.hidden {
+    width: 0;
+    height: 0;
+  }
+`;
+
 export default function Menu() {
   const [isMinimized, setIsMinimized] = useState(true);
   const { setUser } = useContext(UserContext);
   return (
     <MenuWrapper>
       <FiMenu onClick={() => setIsMinimized(false)} size={24} />
-      <AnimatedContainer className={isMinimized ? "hidden" : "visible"}>
-        <div
-          style={{
-            paddingTop: 16,
-            paddingRight: 16,
-            width: 300,
-            height: 300,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-end",
-          }}
-        >
-          <FiChevronRight
-            onClick={() => setIsMinimized(true)}
-            size={24}
-            style={{ marginBottom: "16px" }}
-          />
-          <h4 onClick={() => setUser(undefined)}>Log out</h4>
-        </div>
-      </AnimatedContainer>
+      <Backdrop
+        onClick={(event) =>
+          event.currentTarget === event.target && setIsMinimized(true)
+        }
+        className={isMinimized ? "hidden" : "visible"}
+      >
+        <AnimatedContainer className={isMinimized ? "hidden" : "visible"}>
+          <div
+            style={{
+              paddingTop: 16,
+              paddingRight: 16,
+              width: 300,
+              height: 300,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-end",
+            }}
+          >
+            <FiChevronRight
+              onClick={() => setIsMinimized(true)}
+              size={24}
+              style={{ marginBottom: "16px" }}
+            />
+            <h4 onClick={() => setUser(undefined)}>Log out</h4>
+          </div>
+        </AnimatedContainer>
+      </Backdrop>
     </MenuWrapper>
   );
 }
