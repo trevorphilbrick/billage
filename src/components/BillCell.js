@@ -121,7 +121,7 @@ export default function BillCell({ bill }) {
 
   const handleEditPress = () => {
     setIsVisible(true);
-    setModalContent(<EditBillModal />);
+    setModalContent(<EditBillModal data={data} billId={billId} />);
   };
 
   useEffect(() => {

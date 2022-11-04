@@ -2,8 +2,6 @@ import { useContext, useState } from "react";
 import { FiMenu, FiChevronRight } from "react-icons/fi";
 import styled from "styled-components";
 import { UserContext } from "../App";
-import { ModalContext } from "../screens/Dashboard";
-import AddNewContainer from "./AddNewContainer";
 
 const MenuWrapper = styled.div`
   display: flex;
@@ -51,24 +49,9 @@ const Backdrop = styled.div`
   }
 `;
 
-const ModalWrapper = styled.div`
-  background-color: #00293d;
-  max-width: 400px;
-  width: 90%;
-  padding: 24px;
-  border-radius: 4px;
-`;
-
-const ModalContent = () => (
-  <ModalWrapper>
-    <AddNewContainer />
-  </ModalWrapper>
-);
-
 export default function Menu() {
   const [isMinimized, setIsMinimized] = useState(true);
   const { setUser } = useContext(UserContext);
-  const { setIsVisible, setModalContent } = useContext(ModalContext);
   return (
     <MenuWrapper>
       <FiMenu onClick={() => setIsMinimized(false)} size={24} />
@@ -96,15 +79,6 @@ export default function Menu() {
               style={{ marginBottom: "16px" }}
             />
             <h4 onClick={() => setUser(undefined)}>Log out</h4>
-            <h4
-              onClick={() => {
-                // TODO: Create custom modal hook
-                setIsVisible(true);
-                setModalContent(<ModalContent />);
-              }}
-            >
-              Modal Test
-            </h4>
           </div>
         </AnimatedContainer>
       </Backdrop>

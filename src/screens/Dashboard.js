@@ -1,3 +1,4 @@
+<script src="http://localhost:8097"></script>;
 import styled from "styled-components";
 import MainContainer from "../components/MainContainer";
 import { createContext, useContext, useEffect, useState } from "react";
