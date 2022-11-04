@@ -10,8 +10,10 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 import { firestoreContext, UserContext } from "../App";
-import { UpdatedBillListContext } from "../screens/Dashboard";
+import { ModalContext, UpdatedBillListContext } from "../screens/Dashboard";
 import { FiXCircle } from "react-icons/fi";
+import Modal from "./Modal";
+import EditBillModal from "./EditBillModal";
 
 const BillCellWrapper = styled.div`
   background-color: ${({ isPaid }) => (isPaid ? "#52b788" : "#00293d")};
@@ -51,10 +53,16 @@ const DeleteButton = styled.button`
   margin-top: 4px;
 `;
 
+const EditButtonContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`;
+
 export default function BillCell({ bill }) {
   const db = useContext(firestoreContext);
   const { user } = useContext(UserContext);
   const { setUpdatedBills } = useContext(UpdatedBillListContext);
+  const { setIsVisible, setModalContent } = useContext(ModalContext);
   const { billId, data } = bill;
   const q = query(collection(db, "bills"), where("uid", "==", user.uid));
   const billRef = doc(db, "bills", billId);
@@ -111,6 +119,11 @@ export default function BillCell({ bill }) {
     console.log(`request made in BillCell line 91`);
   };
 
+  const handleEditPress = () => {
+    setIsVisible(true);
+    setModalContent(<EditBillModal />);
+  };
+
   useEffect(() => {
     // TODO: simplify the updateDoc calls
     if (billPaid) {
@@ -159,6 +172,7 @@ export default function BillCell({ bill }) {
       isPaid={billPaid}
       onClick={() => setIsActive(!isActive)}
     >
+      {isActive && <Modal />}
       <MinimizedContentWrapper>
         <div
           style={{
@@ -192,12 +206,16 @@ export default function BillCell({ bill }) {
       </MinimizedContentWrapper>
       {isActive && (
         <MaximizedContentWrapper>
+          {!data.dueDate && <p>No addtional information provided.</p>}
           {data.dueDate && (
             <DateContainer>
               <p>Estimated Due Date:</p>
               <p>{createDate()}</p>
             </DateContainer>
           )}
+          <EditButtonContainer>
+            <button onClick={() => handleEditPress()}>Edit</button>
+          </EditButtonContainer>
         </MaximizedContentWrapper>
       )}
     </BillCellWrapper>
