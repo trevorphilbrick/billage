@@ -58,6 +58,19 @@ const EditButtonContainer = styled.div`
   justify-content: flex-end;
 `;
 
+const EditButton = styled.button`
+  background-color: #ffbe0b;
+  padding: 8px;
+  margin: 15px 0 0 0;
+  color: #333;
+  font-weight: bolder;
+  border-radius: 4px;
+  border: none;
+  &:active {
+    background-color: #ff850b;
+  }
+`;
+
 export default function BillCell({ bill }) {
   const db = useContext(firestoreContext);
   const { user } = useContext(UserContext);
@@ -108,7 +121,9 @@ export default function BillCell({ bill }) {
         break;
     }
 
-    return `${dayOfWeek} ${day}/${month}`;
+    return `${dayOfWeek} ${day}/${
+      day > parseInt(parsedDate[2]) ? month : month === 12 ? 1 : month + 1
+    }`;
   };
 
   const deleteSelectedBill = async () => {
@@ -214,7 +229,7 @@ export default function BillCell({ bill }) {
             </DateContainer>
           )}
           <EditButtonContainer>
-            <button onClick={() => handleEditPress()}>Edit</button>
+            <EditButton onClick={() => handleEditPress()}>Edit</EditButton>
           </EditButtonContainer>
         </MaximizedContentWrapper>
       )}
