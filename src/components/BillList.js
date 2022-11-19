@@ -25,7 +25,7 @@ export default function BillList() {
 
   return (
     <div style={{ marginTop: 36 }}>
-      <h3 style={{ marginBottom: "16px" }}>Your Bills</h3>
+      <h3 style={{ marginBottom: "16px", textAlign: "center" }}>Your Bills</h3>
       {fetchedBillData &&
         fetchedBillData.map((bill) => {
           return <BillCell bill={bill} key={bill.billId} />;

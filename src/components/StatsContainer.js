@@ -32,6 +32,7 @@ const PercentageNumber = styled.div`
 export default function StatsContainer() {
   const { updatedBills } = useContext(UpdatedBillListContext);
   const [paidBills, setPaidBills] = useState();
+  const [amounts, setAmounts] = useState({ paid: 0, total: 0 });
   const paidPercentage = (paidBills / updatedBills.length) * 100;
 
   const checkPaidBills = () => {
@@ -42,9 +43,24 @@ export default function StatsContainer() {
     setPaidBills(filteredBills.length);
   };
 
+  const createPaidAmount = () => {
+    let paidAmount = 0;
+    let totalAmount = 0;
+    updatedBills.forEach((bill) => {
+      if (bill.data.paid) {
+        paidAmount += bill.data.monthlyAmt;
+      }
+      totalAmount += bill.data.monthlyAmt;
+    });
+    setAmounts({ paid: paidAmount, total: totalAmount });
+  };
+
   useEffect(() => {
     checkPaidBills();
+    createPaidAmount();
   }, [updatedBills]);
+
+  useEffect(() => createPaidAmount(), [paidBills]);
 
   return (
     <StatsContainerWrapper>
@@ -58,6 +74,10 @@ export default function StatsContainer() {
           strokeColor={paidPercentage === 100 ? "#52b788" : "#008ED5"}
         />
       </CircleContainer>
+      <p style={{ marginTop: 16 }}>
+        You{"'"}ve paid{" "}
+        <strong> {` $${amounts.paid} / $${amounts.total}`} </strong>
+      </p>
     </StatsContainerWrapper>
   );
 }

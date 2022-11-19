@@ -39,6 +39,17 @@ const StyledInput = styled.input`
   color: #ccc;
   border-radius: 4px;
 `;
+const StyledSelect = styled.select`
+  margin-top: 8px;
+  border-top-style: hidden;
+  border-right-style: hidden;
+  border-left-style: hidden;
+  border-bottom-style: hidden;
+  background-color: #002233;
+  padding: 8px;
+  color: #ccc;
+  border-radius: 4px;
+`;
 
 const SubmitButton = styled.button`
   background-color: #52b788;
@@ -159,14 +170,26 @@ export default function AddNewContainer({
         ) : null}
         <InputLabel>
           Bill type
-          <StyledInput
+          {/* <StyledInput
             type="text"
             name="billType"
             id="billType"
             placeholder="Utilities"
             onChange={formikAddNewBill.handleChange}
             value={formikAddNewBill.values.billType}
-          />
+          /> */}
+          <StyledSelect
+            name="billType"
+            id="billType"
+            placeholder="Select a type"
+            onChange={formikAddNewBill.handleChange}
+            value={formikAddNewBill.values.billType}
+          >
+            <option value="">Select a type</option>
+            <option value="Credit">Credit</option>
+            <option value="Expense">Expense</option>
+            <option value="Utility">Utility</option>
+          </StyledSelect>
         </InputLabel>
         {formikAddNewBill.errors.billType &&
         formikAddNewBill.touched.billType ? (
